@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Bouncy Ball Game</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #87CEEB; text-align: center; }
+        canvas { display: block; background: #f0f0f0; margin: auto; touch-action: none; }
+        #restartBtn {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 15px 30px;
+            font-size: 20px;
+            background: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="score">Score: 0 | High Score: 2429</div>
+    <canvas id="gameCanvas"></canvas>
+    <button id="restartBtn" onclick="restartGame()">Restart</button>
+    <script>
+        alert("Win Level One at 2429 Score!");
+
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const restartBtn = document.getElementById("restartBtn");
+        const scoreDisplay = document.getElementById("score");
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        let ball = { x: 100, y: canvas.height - 100, radius: 20, dx: 3, dy: 0, gravity: 0.5, bounce: -10, bounceCount: 0, maxBounces: 3, onGround: false };
+        let walls = [];
+        let wallWidth = 150;
+        let wallHeight = 250;
+        let spacing = 300;
+        let numWalls = 2429 / 10; 
+        let cameraOffsetX = 0;
+        let gameOver = false;
+        let score = 0;
+        const highScore = 2429;
+        
+        for (let i = 0; i < numWalls; i++) {
+            let heightVariation = Math.random() * 100 - 50;
+            walls.push({ x: i * spacing, y: canvas.height - (wallHeight + heightVariation), width: wallWidth, height: wallHeight + heightVariation });
+        }
+
+        let castle = { x: numWalls * spacing, y: canvas.height - 300, width: 120, height: 150 };
+
+        function update() {
+            if (gameOver) return;
+
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+            ball.dy += ball.gravity;
+
+            let onWall = false;
+            walls.forEach(wall => {
+                if (
+                    ball.x + ball.radius > wall.x &&
+                    ball.x - ball.radius < wall.x + wall.width &&
+                    ball.y + ball.radius > wall.y
+                ) {
+                    ball.dy = 0;
+                    ball.y = wall.y - ball.radius;
+                    ball.onGround = true;
+                    onWall = true;
+                    ball.bounceCount = 0;
+                    score += 10;
+                }
+            });
+
+            if (!onWall && ball.y + ball.radius > canvas.height) {
+                gameOver = true;
+                restartBtn.style.display = "block";
+            }
+
+            if (
+                ball.x + ball.radius > castle.x &&
+                ball.x - ball.radius < castle.x + castle.width &&
+                ball.y + ball.radius > castle.y
+            ) {
+                alert("Congratulations! You have completed the game with a score of " + score + "!\nWait for updates coming soon!");
+                restartGame();
+            }
+
+            if (score >= highScore) {
+                alert("Congratulations! You have reached the maximum score of 2429!\nWait for updates coming soon!");
+                restartGame();
+            }
+
+            cameraOffsetX = ball.x - canvas.width / 4;
+            scoreDisplay.textContent = "Score: " + score + " | High Score: " + highScore;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(-cameraOffsetX, 0);
+
+            ctx.fillStyle = "red";
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = "brown";
+            walls.forEach(wall => {
+                ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
+            });
+
+            ctx.fillStyle = "blue";
+            ctx.fillRect(castle.x, castle.y, castle.width, castle.height);
+
+            ctx.restore();
+        }
+
+        function gameLoop() {
+            update();
+            draw();
+            if (!gameOver) requestAnimationFrame(gameLoop);
+        }
+
+        function restartGame() {
+            ball = { x: 100, y: canvas.height - 100, radius: 20, dx: 3, dy: 0, gravity: 0.5, bounce: -10, bounceCount: 0, maxBounces: 3, onGround: false };
+            score = 0;
+            gameOver = false;
+            restartBtn.style.display = "none";
+            scoreDisplay.textContent = "Score: 0 | High Score: " + highScore;
+            gameLoop();
+        }
+
+        window.addEventListener("keydown", (event) => {
+            if (event.code === "Space" && ball.bounceCount < ball.maxBounces) {
+                ball.dy = ball.bounce;
+                ball.bounceCount++;
+                ball.onGround = false;
+            }
+        });
+
+        canvas.addEventListener("touchstart", () => {
+            if (ball.bounceCount < ball.maxBounces) {
+                ball.dy = ball.bounce;
+                ball.bounceCount++;
+                ball.onGround = false;
+            }
+        });
+
+        gameLoop();
+    </script>
+</body>
+</html>
