@@ -3,40 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bouncy Ball Game</title>
+    <title>Game Website</title>
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #87CEEB;
-            margin: 0;
-            text-align: center;
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        header {
+            background: #222;
+            color: white;
+            padding: 15px 0;
+            font-size: 24px;
         }
         .container {
-            text-align: center;
+            width: 90%;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        h1 {
-            font-size: 36px;
-            color: white;
+        .game-container {
+            width: 100%;
+            height: 500px;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
         }
-        .play-btn {
-            padding: 15px 30px;
-            font-size: 24px;
-            background: red;
-            color: white;
+        iframe {
+            width: 100%;
+            height: 100%;
             border: none;
-            cursor: pointer;
-            border-radius: 10px;
+        }
+        .ad-container {
+            width: 100%;
+            height: 100px;
+            background: #ccc;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #666;
+        }
+        footer {
+            background: #222;
+            color: white;
+            padding: 10px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
+    <header>
+        Game Website
+    </header>
     <div class="container">
-        <h1>Welcome to Bouncy Ball Game</h1>
-        <button class="play-btn" onclick="location.href='game.html'">Play</button>
+        <div class="ad-container">[Ad Space - Banner]</div>
+        <div class="game-container">
+            <iframe src="https://sproutbounce.github.io/Bouncy-Ball/"></iframe>
+        </div>
+        <div class="ad-container">[Ad Space - In-Game]</div>
     </div>
+    <footer>
+        &copy; 2025 Game Website. All rights reserved.
+    </footer>
 </body>
 </html>
